@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,12 +10,33 @@ namespace Ejercicio1.Models
 {
     internal class DepartamentoVehicular
     {
-        ArrayList registros = new ArrayList();
+       // ArrayList registros = new ArrayList();
+        List<RegistroVehiculo>  registros = new List<RegistroVehiculo>();
+        
+        
 
         public int CantidadRegistros { get; private set; }
+
         int nuevaSerie = 0;
         string nuevaPatente = "";
 
+
+        public RegistroVehiculo RegistrarVehiculo(Persona propietario , string patente)
+        {
+            RegistroVehiculo nuevoRegistro = new RegistroVehiculo(patente , propietario);
+            if(nuevoRegistro != null) { registros.Add(nuevoRegistro); }
+            return nuevoRegistro;
+
+        }
+
+        public List<RegistroVehiculo> ObtenerRegistros()
+        {
+            registros.Sort();
+            return registros;
+        }
+
+        #region Metodos para la guia 2.2
+        /*
         public RegistroVehiculo RegistrarVechiculo(Persona elPropietario)
         {
             CantidadRegistros++;
@@ -29,7 +51,7 @@ namespace Ejercicio1.Models
 
             RegistroVehiculo unRegistro = new RegistroVehiculo(this.nuevaPatente, elPropietario, this.nuevaSerie);
 
-            registros.Add(unRegistro);
+            Registros.Add(unRegistro);
 
             return unRegistro;
         }
@@ -69,9 +91,9 @@ namespace Ejercicio1.Models
         public RegistroVehiculo VerRegistro(int indice)
         {
             
-            if (indice >= 0 && indice < registros.Count)
+            if (indice >= 0 && indice < Registros.Count)
             {
-                if (registros[indice] is RegistroVehiculo registro) // por si adentro del arrayList no contiene un tipo RegistroVehicular
+                if (Registros[indice] is RegistroVehiculo registro) // por si adentro del arrayList no contiene un tipo RegistroVehicular
                 {
                     return registro; 
 
@@ -80,5 +102,7 @@ namespace Ejercicio1.Models
             return  null;
         }
         //
+        */
+        #endregion
     }
 }

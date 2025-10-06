@@ -15,6 +15,7 @@ namespace Ejercicio1
     {
         DepartamentoVehicular departamento;
         RegistroVehiculo nuevoRegistro;
+
         public Form1()
         {
             InitializeComponent();
@@ -28,51 +29,57 @@ namespace Ejercicio1
             Close();
         }
 
-        private void btnCargarPersona_Click(object sender, EventArgs e)
+
+
+
+        private void Form1_Load(object sender, EventArgs e)
         {
-
-            //AGREGAR UN CONTROL PARA QUE NO SE REPITAN LOS DNI 
-
-
-
-            FDatosPersona VDatosPersona = new FDatosPersona();
-            string dni;
-            string nombre;
-            if(VDatosPersona.ShowDialog() == DialogResult.OK)
-            {
-                dni = VDatosPersona.tbDNI.Text; // debemos hacer una validacion para que no ingresen otra cosa, en el gormulario de cargar los datos de la persona.
-                nombre = VDatosPersona.tbNombre.Text;
-                Persona nuevoPropietario = new Persona(dni,nombre);
-                nuevoRegistro = departamento.RegistrarVechiculo(nuevoPropietario); // para guardar el registro y agregarlo o no  a la lista, si es que se da click en el boton registrar
-
-                //mostramos los datos en la ventana principal
-                lBoxDatosRegistro.Items.Clear();
-                lBoxDatosRegistro.Items.Add(nuevoRegistro.VerDetalle());
-
-                
-                
-            }
-
-            VDatosPersona.Dispose();
 
         }
 
         private void btnRegistrar_Click(object sender, EventArgs e)
         {
-            DialogResult respuesta = MessageBox.Show("Desea Registrar el Vehiculo?", "Registrar", MessageBoxButtons.YesNo);
+            string nom, dni, patente;
+            Persona propietario;
 
-            if(respuesta == DialogResult.Yes)
+            try
             {
-                //departamento.
+                nom = tbNombre.Text;
+                dni = tbDNI.Text;
+                patente = tbPatente.Text.Trim();
+
+                propietario = new Persona(dni, nom);
+
+                departamento.RegistrarVehiculo( propietario , patente);
+
+                tbNombre.Clear();
+                tbDNI.Clear();
+                tbPatente.Clear();
+
+                
+
+            }
+            catch (FormatoPatenteNoValidaException fp)
+            {
+                MessageBox.Show(fp.Message, "Atencion", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+            catch (RangoDniIncorrectoException re)
+            {
+                MessageBox.Show(re.Message, "Atencion", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+            catch (Exception ex) 
+            {
+                MessageBox.Show(ex.Message,"Ups!",MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
-        private void btnListarRegistros_Click(object sender, EventArgs e)
+        private void btnVerRegistros_Click(object sender, EventArgs e)
         {
-            for(int i = 0; i< departamento.CantidadRegistros; i++)
-            {
-                lBoxListado.Items.Add(departamento.VerRegistro(i).VerDetalle());
-            }
+            FormVer VMostrar = new FormVer();
+
+            VMostrar.listaRegistros.DataSource = departamento.ObtenerRegistros();
+
+            VMostrar.ShowDialog();
         }
     }
 }
